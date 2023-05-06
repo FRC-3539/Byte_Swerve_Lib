@@ -1,11 +1,8 @@
 package org.frcteam3539.CTRE_Swerve_Lib.swerve;
 
 import java.util.Arrays;
-import java.util.Collections;
-
 import com.ctre.phoenixpro.BaseStatusSignalValue;
 import com.ctre.phoenixpro.hardware.Pigeon2;
-
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
@@ -162,6 +159,11 @@ public class CTRSwerveDrivetrain {
     {
         return Rotation2d.fromDegrees(BaseStatusSignalValue.getLatencyCompensatedValue(
                                 m_pigeon2.getYaw(), m_pigeon2.getAngularVelocityZ()));
+    }
+
+    public Pigeon2 getPigeon2()
+    {
+        return this.m_pigeon2;
     }
 
     public void driveFullyFieldCentric(double xSpeeds, double ySpeeds, Rotation2d targetAngle) {
