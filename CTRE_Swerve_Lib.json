@@ -1,0 +1,19 @@
+{
+  "fileName": "CTRE_Swerve_Lib.json",
+  "name": "CTRE_Swerve_Lib",
+  "version": "1.0.0",
+  "uuid": "de9d060e-eae0-11ed-a05b-0242ac120003",
+  "mavenUrls": [
+    "https://jitpack.io"
+  ],
+  "jsonUrl": "https://raw.githubusercontent.com/BytingBulldogs3539/swerve-lib/develop/SdsSwerveLib.json",
+  "javaDependencies": [
+    {
+      "groupId": "com.github.BytingBulldogs3539",
+      "artifactId": "CTRE_Swerve_Lib",
+      "version": "1.0.0"
+    }
+  ],
+  "jniDependencies": [],
+  "cppDependencies": []
+}
