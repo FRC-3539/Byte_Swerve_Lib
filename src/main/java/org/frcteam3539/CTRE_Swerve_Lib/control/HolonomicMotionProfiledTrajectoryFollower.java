@@ -1,12 +1,13 @@
 package org.frcteam3539.CTRE_Swerve_Lib.control;
 
-import org.frcteam3539.CTRE_Swerve_Lib.util.HolonomicDriveSignal;
 import org.frcteam3539.CTRE_Swerve_Lib.util.HolonomicFeedforward;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 
-public class HolonomicMotionProfiledTrajectoryFollower extends TrajectoryFollower<HolonomicDriveSignal> {
+public class HolonomicMotionProfiledTrajectoryFollower extends TrajectoryFollower<ChassisSpeeds> {
     private PidController forwardController;
     private PidController strafeController;
     private PidController rotationController;
@@ -18,7 +19,7 @@ public class HolonomicMotionProfiledTrajectoryFollower extends TrajectoryFollowe
     private boolean finished = false;
 
     public HolonomicMotionProfiledTrajectoryFollower(PidConstants translationConstants, PidConstants rotationConstants,
-                                                     HolonomicFeedforward feedforward) {
+            HolonomicFeedforward feedforward) {
         this.forwardController = new PidController(translationConstants);
         this.strafeController = new PidController(translationConstants);
         this.rotationController = new PidController(rotationConstants);
@@ -29,17 +30,15 @@ public class HolonomicMotionProfiledTrajectoryFollower extends TrajectoryFollowe
     }
 
     @Override
-    protected HolonomicDriveSignal calculateDriveSignal(Pose2d currentPose, Translation2d velocity,
-                                                        double rotationalVelocity, Trajectory trajectory, double time,
-                                                        double dt) {
+    protected ChassisSpeeds calculateDriveSignal(Pose2d currentPose, Trajectory trajectory, double time, double dt) {
         if (time > trajectory.getDuration()) {
             finished = true;
-            return new HolonomicDriveSignal(new Translation2d(), 0.0, false);
+            return ChassisSpeeds.fromFieldRelativeSpeeds(0,0,0,Rotation2d.fromDegrees(0));
         }
 
         lastState = trajectory.calculate(time);
 
-        Translation2d segment =  new Translation2d(
+        Translation2d segment = new Translation2d(
                 lastState.getPathState().getHeading().getCos(),
                 lastState.getPathState().getHeading().getSin());
 
@@ -52,14 +51,10 @@ public class HolonomicMotionProfiledTrajectoryFollower extends TrajectoryFollowe
         strafeController.setSetpoint(lastState.getPathState().getPosition().getY());
         rotationController.setSetpoint(lastState.getPathState().getRotation().getRadians());
 
-        return new HolonomicDriveSignal(
-                new Translation2d(
-                        forwardController.calculate(currentPose.getTranslation().getX(), dt) + feedforwardVector.getX(),
-                        strafeController.calculate(currentPose.getTranslation().getY(), dt) + feedforwardVector.getY()
-                ),
-                rotationController.calculate(currentPose.getRotation().getRadians(), dt),
-                true
-        );
+        return ChassisSpeeds.fromFieldRelativeSpeeds(
+                forwardController.calculate(currentPose.getTranslation().getX(), dt) + feedforwardVector.getX(),
+                strafeController.calculate(currentPose.getTranslation().getY(), dt) + feedforwardVector.getY(),
+                rotationController.calculate(currentPose.getRotation().getRadians(), dt), currentPose.getRotation());
     }
 
     public Trajectory.State getLastState() {
