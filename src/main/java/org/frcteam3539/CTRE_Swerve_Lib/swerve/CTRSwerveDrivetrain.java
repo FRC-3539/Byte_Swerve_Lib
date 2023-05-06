@@ -171,6 +171,11 @@ public class CTRSwerveDrivetrain {
             m_modules[i].apply(swerveStates[i]);
         }
     }
+    
+    public double getMaxVelocity()
+    {
+        return MAX_VELOCITY_METERS_PER_SECOND;
+    }
 
     public void driveStopMotion() {
         /* Point every module toward (0,0) to make it close to a X configuration */
