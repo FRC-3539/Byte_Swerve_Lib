@@ -1,5 +1,8 @@
 package org.frcteam3539.CTRE_Swerve_Lib.swerve;
 
+import java.util.Arrays;
+import java.util.Collections;
+
 import com.ctre.phoenixpro.BaseStatusSignalValue;
 import com.ctre.phoenixpro.hardware.Pigeon2;
 
@@ -13,7 +16,6 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.trajectory.constraint.SwerveDriveKinematicsConstraint;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -31,6 +33,7 @@ public class CTRSwerveDrivetrain {
     private Field2d m_field;
     private PIDController m_turnPid;
     private double MAX_VELOCITY_METERS_PER_SECOND = Double.MAX_VALUE;
+    private double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = 0.0;
 
     /* Perform swerve module updates in a separate thread to minimize latency */
     private class OdometryThread extends Thread {
@@ -97,11 +100,16 @@ public class CTRSwerveDrivetrain {
         m_modulePositions = new SwerveModulePosition[ModuleCount];
         m_moduleLocations = new Translation2d[ModuleCount];
 
+        double dtRadius = new Translation2d().nearest(Arrays.asList(m_moduleLocations)).getDistance(new Translation2d());
+
         int iteration = 0;
         for (SwerveModuleConstants module : modules) {
             double maxModuleVel = (2 * Math.PI * module.WheelRadius)*((6080/60.0)/ module.driveMotorGearRatio);//circumference*(max motor rps) = max module velocity;
             if(maxModuleVel<MAX_VELOCITY_METERS_PER_SECOND)
+            {
                 MAX_VELOCITY_METERS_PER_SECOND = maxModuleVel;
+                MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = MAX_VELOCITY_METERS_PER_SECOND/ dtRadius;
+            }
             
             m_modules[iteration] = new CTRSwerveModule(module, driveTrainConstants.CANbusName);
             m_moduleLocations[iteration] = new Translation2d(module.locationX, module.locationY);
@@ -171,10 +179,15 @@ public class CTRSwerveDrivetrain {
             m_modules[i].apply(swerveStates[i]);
         }
     }
-    
+
     public double getMaxVelocity()
     {
         return MAX_VELOCITY_METERS_PER_SECOND;
+    }
+
+    public double getMaxRotationVelocity()
+    {
+        return MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
     }
 
     public void driveStopMotion() {
@@ -187,6 +200,10 @@ public class CTRSwerveDrivetrain {
 
     public void seedFieldRelative() {
         m_pigeon2.setYaw(0);
+    }
+
+    public void setGyro(double angle) {
+        m_pigeon2.setYaw(angle);
     }
 
     public Pose2d getPoseMeters() {

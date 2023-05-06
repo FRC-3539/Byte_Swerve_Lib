@@ -23,7 +23,7 @@ public class HolonomicMotionProfiledTrajectoryFollower extends TrajectoryFollowe
         this.strafeController = new PidController(translationConstants);
         this.rotationController = new PidController(rotationConstants);
         this.rotationController.setContinuous(true);
-        this.rotationController.setInputRange(0.0, 2.0 * Math.PI);
+        this.rotationController.setInputRange(-Math.PI, Math.PI);
 
         this.feedforward = feedforward;
     }
