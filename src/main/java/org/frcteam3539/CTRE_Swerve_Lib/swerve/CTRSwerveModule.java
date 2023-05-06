@@ -14,7 +14,6 @@ import com.ctre.phoenixpro.signals.InvertedValue;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.util.Units;
 
 public class CTRSwerveModule {
     private TalonFX m_driveMotor;
@@ -80,7 +79,7 @@ public class CTRSwerveModule {
 
         /* Calculate the ratio of drive motor rotation to meter on ground */
         double rotationsPerWheelRotation = constants.driveMotorGearRatio;
-        double metersPerWheelRotation = 2 * Math.PI * Units.inchesToMeters(constants.WheelRadius);
+        double metersPerWheelRotation = 2 * Math.PI * constants.WheelRadius;
         m_driveRotationsPerMeter = rotationsPerWheelRotation / metersPerWheelRotation;
     }
 
@@ -92,12 +91,9 @@ public class CTRSwerveModule {
         m_steerVelocity.refresh();
 
         /* Now latency-compensate our signals */
-        double drive_rot =
-                m_drivePosition.getValue()
-                        + (m_driveVelocity.getValue() * m_drivePosition.getTimestamp().getLatency());
-        double angle_rot =
-                m_steerPosition.getValue()
-                        + (m_steerVelocity.getValue() * m_steerPosition.getTimestamp().getLatency());
+        double drive_rot = BaseStatusSignalValue.getLatencyCompensatedValue(m_drivePosition, m_driveVelocity);
+
+        double angle_rot = BaseStatusSignalValue.getLatencyCompensatedValue(m_steerPosition, m_steerVelocity);
 
         /* And push them into a SwerveModuleState object to return */
         m_internalState.distanceMeters = drive_rot / m_driveRotationsPerMeter;

@@ -13,6 +13,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.trajectory.constraint.SwerveDriveKinematicsConstraint;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -29,6 +30,7 @@ public class CTRSwerveDrivetrain {
     private OdometryThread m_odometryThread;
     private Field2d m_field;
     private PIDController m_turnPid;
+    private double MAX_VELOCITY_METERS_PER_SECOND = Double.MAX_VALUE;
 
     /* Perform swerve module updates in a separate thread to minimize latency */
     private class OdometryThread extends Thread {
@@ -97,6 +99,10 @@ public class CTRSwerveDrivetrain {
 
         int iteration = 0;
         for (SwerveModuleConstants module : modules) {
+            double maxModuleVel = (2 * Math.PI * module.WheelRadius)*((6080/60.0)/ module.driveMotorGearRatio);//circumference*(max motor rps) = max module velocity;
+            if(maxModuleVel<MAX_VELOCITY_METERS_PER_SECOND)
+                MAX_VELOCITY_METERS_PER_SECOND = maxModuleVel;
+            
             m_modules[iteration] = new CTRSwerveModule(module, driveTrainConstants.CANbusName);
             m_moduleLocations[iteration] = new Translation2d(module.locationX, module.locationY);
             m_modulePositions[iteration] = m_modules[iteration].getPosition();
@@ -129,6 +135,7 @@ public class CTRSwerveDrivetrain {
 
     public void driveRobotCentric(ChassisSpeeds speeds) {
         var swerveStates = m_kinematics.toSwerveModuleStates(speeds);
+        SwerveDriveKinematics.desaturateWheelSpeeds(swerveStates, MAX_VELOCITY_METERS_PER_SECOND);
         for (int i = 0; i < ModuleCount; ++i) {
             m_modules[i].apply(swerveStates[i]);
         }
@@ -137,6 +144,7 @@ public class CTRSwerveDrivetrain {
     public void driveFieldCentric(ChassisSpeeds speeds) {
         ChassisSpeeds roboCentric = ChassisSpeeds.fromFieldRelativeSpeeds(speeds, getGyroAngle());
         var swerveStates = m_kinematics.toSwerveModuleStates(roboCentric);
+        SwerveDriveKinematics.desaturateWheelSpeeds(swerveStates, MAX_VELOCITY_METERS_PER_SECOND);
         for (int i = 0; i < ModuleCount; ++i) {
             m_modules[i].apply(swerveStates[i]);
         }
@@ -157,6 +165,8 @@ public class CTRSwerveDrivetrain {
                 ChassisSpeeds.fromFieldRelativeSpeeds(
                         xSpeeds, ySpeeds, rotationalSpeed, getGyroAngle());
         var swerveStates = m_kinematics.toSwerveModuleStates(roboCentric);
+        SwerveDriveKinematics.desaturateWheelSpeeds(swerveStates, MAX_VELOCITY_METERS_PER_SECOND);
+        
         for (int i = 0; i < ModuleCount; ++i) {
             m_modules[i].apply(swerveStates[i]);
         }

@@ -15,7 +15,7 @@ public class SwerveModuleConstants {
     public double driveMotorGearRatio = 0;
     /** Gear ratio between steer motor and CANcoder An example ratio for the SDS Mk4: 12.8 */
     public double steerMotorGearRatio = 0;
-    /** Wheel radius of the driving wheel in inches */
+    /** Wheel radius of the driving wheel in meters */
     public double WheelRadius = 0;
     /**
      * The location of this module's wheels relative to the physical center of the robot in meters

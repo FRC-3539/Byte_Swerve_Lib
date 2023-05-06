@@ -12,8 +12,8 @@ sourceCompatibility = JavaVersion.VERSION_11
 targetCompatibility = JavaVersion.VERSION_11
 
 allprojects {
-    group = 'org.frcteam2910.common'
-    version = '2023.0.0'
+    group = 'com.github.BytingBulldogs3539.CTRE_Swerve_Lib'
+    version = '1.0.1'
 
     repositories {
         mavenCentral()
