@@ -1,5 +1,6 @@
 package org.frcteam3539.CTRE_Swerve_Lib.control;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 
@@ -16,10 +17,14 @@ public final class SimplePathBuilder {
     private Translation2d lastPosition;
     private double length = 0.0;
 
-    public SimplePathBuilder(Translation2d initialPosition, Rotation2d initialRotation) {
-        this.lastPosition = initialPosition;
+    /**
+     * A class used to build a path with simple lines and arcs.
+     * @param initialPose the starting pose of the robot at the beginning of this path.
+     */
+    public SimplePathBuilder(Pose2d initialPose) {
+        this.lastPosition = initialPose.getTranslation();
 
-        rotationMap.put(0.0, initialRotation);
+        rotationMap.put(0.0, initialPose.getRotation());
     }
 
     private void addSegment(PathSegment segment) {
@@ -33,31 +38,74 @@ public final class SimplePathBuilder {
         rotationMap.put(length, rotation);
     }
 
+    /**
+     * Build the path.
+     * @return The path.
+     */
     public Path build() {
         return new Path(segmentList.toArray(new PathSegment[0]), rotationMap);
     }
 
+    /**
+     * Add an arc to the path without a specific robot rotation. It will keep the last robot rotation.
+     * @param position 
+     * @return SimplePathBuilder object to add more segments to or to use to build the path.
+     */
+    public SimplePathBuilder arcTo(Translation2d position, Translation2d center, boolean clockwise) {
+        addSegment(new ArcSegment(lastPosition, position, center, clockwise));
+        return this;
+    }
+
+    /**
+     * Add an arc to the path with a specific robot rotation.
+     * @param pose The pose of the robot at the end of that arc segment. 
+     * @return SimplePathBuilder object to add more segments to or to use to build the path.
+     */
+    public SimplePathBuilder arcTo(Pose2d pose, Translation2d center, boolean clockwise) {
+        addSegment(new ArcSegment(lastPosition, pose.getTranslation(), center, clockwise), pose.getRotation());
+        return this;
+    }
+
+    /**
+     * Add an arc to the path without a specific robot rotation. It will keep the last robot rotation.
+     * @param position 
+     * @return SimplePathBuilder object to add more segments to or to use to build the path.
+     */
     public SimplePathBuilder arcTo(Translation2d position, Translation2d center) {
         addSegment(new ArcSegment(lastPosition, position, center));
         return this;
     }
 
-    public SimplePathBuilder arcTo(Translation2d position, Translation2d center, Rotation2d rotation) {
-        addSegment(new ArcSegment(lastPosition, position, center), rotation);
+    /**
+     * Add an arc to the path with a specific robot rotation.
+     * @param pose The pose of the robot at the end of that arc segment. 
+     * @return SimplePathBuilder object to add more segments to or to use to build the path.
+     */
+    public SimplePathBuilder arcTo(Pose2d pose, Translation2d center) {
+        addSegment(new ArcSegment(lastPosition, pose.getTranslation(), center), pose.getRotation());
         return this;
     }
 
+    /**
+     * Add a line to the path without a specific robot rotation. It will keep the last robot rotation.
+     * @param position 
+     * @return SimplePathBuilder object to add more segments to or to use to build the path.
+     */
     public SimplePathBuilder lineTo(Translation2d position) {
         addSegment(new LineSegment(lastPosition, position));
         return this;
     }
-
-    public SimplePathBuilder lineTo(Translation2d position, Rotation2d rotation) {
-        addSegment(new LineSegment(lastPosition, position), rotation);
+    /**
+     * Add a line to the path with a specific robot rotation.
+     * @param pose The pose of the robot at the end of that line segment. 
+     * @return SimplePathBuilder object to add more segments to or to use to build the path.
+     */
+    public SimplePathBuilder lineTo(Pose2d pose) {
+        addSegment(new LineSegment(lastPosition, pose.getTranslation()), pose.getRotation());
         return this;
     }
 
-    public static final class ArcSegment extends PathSegment {
+    private static final class ArcSegment extends PathSegment {
         private final Translation2d center;
         private final Translation2d deltaStart;
         private final Translation2d deltaEnd;
@@ -134,7 +182,7 @@ public final class SimplePathBuilder {
         }
     }
 
-    public static final class LineSegment extends PathSegment {
+    private static final class LineSegment extends PathSegment {
         private final Translation2d start;
         private final Translation2d delta;
         private final Rotation2d heading;

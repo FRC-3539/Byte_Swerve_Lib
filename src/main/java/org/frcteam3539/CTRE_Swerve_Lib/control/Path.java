@@ -1,5 +1,6 @@
 package org.frcteam3539.CTRE_Swerve_Lib.control;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 
@@ -69,11 +70,9 @@ public class Path {
 
         return new Path.State(
                 distance,
-                state.getPosition(),
+                new Pose2d(state.getPosition(), rotationMap.getInterpolated(new InterpolatingDouble(distance))),
                 state.getHeading(),
-                rotationMap.getInterpolated(new InterpolatingDouble(distance)),
-                state.getCurvature()
-        );
+                state.getCurvature());
     }
 
     public double getLength() {
@@ -90,16 +89,15 @@ public class Path {
 
     public static class State {
         private final double distance;
-        private final Translation2d position;
+        private final Pose2d pose;
+
         private final Rotation2d heading;
-        private final Rotation2d rotation;
         private final double curvature;
 
-        public State(double distance, Translation2d position, Rotation2d heading, Rotation2d rotation, double curvature) {
+        public State(double distance, Pose2d pose, Rotation2d heading, double curvature) {
             this.distance = distance;
-            this.position = position;
+            this.pose = pose;
             this.heading = heading;
-            this.rotation = rotation;
             this.curvature = curvature;
         }
 
@@ -107,29 +105,25 @@ public class Path {
             return distance;
         }
 
-        public Translation2d getPosition() {
-            return position;
+        public Pose2d getPose2d() {
+            return pose;
         }
 
         public Rotation2d getHeading() {
             return heading;
         }
 
-        public Rotation2d getRotation() {
-            return rotation;
-        }
-
         public double getCurvature() {
             return curvature;
         }
+
         @Override
         public String toString() {
             final DecimalFormat fmt = new DecimalFormat("#0.000");
             return "(distance," + fmt.format(getDistance()) +
-                    ",position," + getPosition() +
+                    ",pose," + getPose2d() +
                     ",heading," + getHeading() +
-                    ",rotation," + getRotation() +
-                    ",curvature," + fmt.format(getCurvature()) +" )";
+                    ",curvature," + fmt.format(getCurvature()) + " )";
         }
 
     }

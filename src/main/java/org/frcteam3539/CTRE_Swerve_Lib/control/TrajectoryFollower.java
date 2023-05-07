@@ -25,8 +25,6 @@ public abstract class TrajectoryFollower<DriveSignalType> {
      * Calculates the drive signal required to follow the trajectory.
      *
      * @param currentPose        the current pose of the robot
-     * @param velocity           the translational velocity of the robot
-     * @param rotationalVelocity the rotational velocity of the robot
      * @param trajectory         the trajectory to follow
      * @param time               the amount of time that has elapsed since the current trajectory started to be followed
      * @param dt                 the amount of time that has elapsed since the update loop was last ran

@@ -47,9 +47,9 @@ public class HolonomicMotionProfiledTrajectoryFollower extends TrajectoryFollowe
 
         Translation2d feedforwardVector = feedforward.calculateFeedforward(segmentVelocity, segmentAcceleration);
 
-        forwardController.setSetpoint(lastState.getPathState().getPosition().getX());
-        strafeController.setSetpoint(lastState.getPathState().getPosition().getY());
-        rotationController.setSetpoint(lastState.getPathState().getRotation().getRadians());
+        forwardController.setSetpoint(lastState.getPathState().getPose2d().getX());
+        strafeController.setSetpoint(lastState.getPathState().getPose2d().getY());
+        rotationController.setSetpoint(lastState.getPathState().getPose2d().getRotation().getRadians());
 
         return ChassisSpeeds.fromFieldRelativeSpeeds(
                 forwardController.calculate(currentPose.getTranslation().getX(), dt) + feedforwardVector.getX(),

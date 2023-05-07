@@ -14,6 +14,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 
@@ -144,6 +145,11 @@ public class CTRSwerveDrivetrain {
         for (int i = 0; i < ModuleCount; ++i) {
             m_modules[i].apply(swerveStates[i]);
         }
+    }
+
+    public void resetPosition(Pose2d pose2d)
+    {
+        m_odometry.resetPosition(getGyroAngle(), m_modulePositions, pose2d);
     }
 
     public void driveFieldCentric(ChassisSpeeds speeds) {

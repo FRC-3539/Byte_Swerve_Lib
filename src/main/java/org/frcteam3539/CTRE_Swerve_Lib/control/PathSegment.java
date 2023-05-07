@@ -27,14 +27,26 @@ public abstract class PathSegment {
             this.curvature = curvature;
         }
 
+        /**
+         * 
+         * @return The location of the robot.
+         */
         public Translation2d getPosition() {
             return position;
         }
 
+        /**
+         * 
+         * @return The heading that the robot is following. This is not the direction/angle the robot is facing this is the direction it is moving.
+         */
         public Rotation2d getHeading() {
             return heading;
         }
 
+        /**
+         * 
+         * @return The curvature of the path.
+         */
         public double getCurvature() {
             return curvature;
         }
