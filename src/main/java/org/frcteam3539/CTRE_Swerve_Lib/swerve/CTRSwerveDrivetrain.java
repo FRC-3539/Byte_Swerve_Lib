@@ -98,7 +98,6 @@ public class CTRSwerveDrivetrain {
         m_modulePositions = new SwerveModulePosition[ModuleCount];
         m_moduleLocations = new Translation2d[ModuleCount];
 
-        double dtRadius = new Translation2d().nearest(Arrays.asList(m_moduleLocations)).getDistance(new Translation2d());
 
         int iteration = 0;
         for (SwerveModuleConstants module : modules) {
@@ -106,7 +105,6 @@ public class CTRSwerveDrivetrain {
             if(maxModuleVel<MAX_VELOCITY_METERS_PER_SECOND)
             {
                 MAX_VELOCITY_METERS_PER_SECOND = maxModuleVel;
-                MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = MAX_VELOCITY_METERS_PER_SECOND/ dtRadius;
             }
             
             m_modules[iteration] = new CTRSwerveModule(module, driveTrainConstants.CANbusName);
@@ -115,6 +113,11 @@ public class CTRSwerveDrivetrain {
 
             iteration++;
         }
+        
+        double dtRadius = new Translation2d().nearest(Arrays.asList(m_moduleLocations)).getDistance(new Translation2d());
+        MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = MAX_VELOCITY_METERS_PER_SECOND/ dtRadius;
+
+
         m_kinematics = new SwerveDriveKinematics(m_moduleLocations);
         
         m_odometry = new SwerveDrivePoseEstimator(
