@@ -38,17 +38,12 @@ public class CentripetalRadiusAccelerationConstraint extends TrajectoryConstrain
 
         // Special case when following a line, centripetal acceleration is 0 so don't
         // constrain velocity
-        if (state.getCurvature() == 0.0) {
+        if (state.getRadius() == 0.0) {
             return Double.POSITIVE_INFINITY;
         }
-        if (state.getCurvature() == Double.POSITIVE_INFINITY) {
+        if (state.getRadius() == Double.POSITIVE_INFINITY) {
             return Double.POSITIVE_INFINITY;
         }
-
-        if (Double.isNaN(state.getCurvature())) {
-            return Double.POSITIVE_INFINITY;
-        }
-
         return Math.sqrt((maxCentripetalAcceleration * state.getRadius()));
     }
 }
