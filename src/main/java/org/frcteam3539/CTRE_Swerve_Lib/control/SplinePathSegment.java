@@ -9,6 +9,8 @@ public final class SplinePathSegment extends PathSegment {
 
     private transient double length = Double.NaN;
 
+    
+
     public SplinePathSegment(Spline spline) {
         this.spline = spline;
     }
@@ -22,6 +24,12 @@ public final class SplinePathSegment extends PathSegment {
                 spline.getHeading(t),
                 spline.getCurvature(t)
         );
+    }
+
+    @Override
+    public double getRadius()
+    {
+        return 0.0;
     }
 
     @Override

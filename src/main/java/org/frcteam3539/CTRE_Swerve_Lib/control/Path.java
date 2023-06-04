@@ -7,6 +7,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import java.text.DecimalFormat;
 import java.util.Map;
 
+import org.frcteam3539.CTRE_Swerve_Lib.control.SimplePathBuilder.LineSegmentWithRadius;
 import org.frcteam3539.CTRE_Swerve_Lib.util.InterpolatingDouble;
 import org.frcteam3539.CTRE_Swerve_Lib.util.InterpolatingTreeMap;
 
@@ -23,6 +24,8 @@ public class Path {
         for (Map.Entry<Double, Rotation2d> rotationEntry : rotationMap.entrySet()) {
             this.rotationMap.put(new InterpolatingDouble(rotationEntry.getKey()), rotationEntry.getValue());
         }
+
+        
 
         distancesFromStart = new double[segments.length];
         double cumulativeLength = 0.0;
@@ -68,11 +71,12 @@ public class Path {
 
         PathSegment.State state = segment.calculate(segmentDistance);
 
+
         return new Path.State(
                 distance,
                 new Pose2d(state.getPosition(), rotationMap.getInterpolated(new InterpolatingDouble(distance))),
                 state.getHeading(),
-                state.getCurvature());
+                state.getCurvature(), segment.getRadius());
     }
 
     public double getLength() {
@@ -90,7 +94,7 @@ public class Path {
     public static class State {
         private final double distance;
         private final Pose2d pose;
-
+        private double radius = 0.0;
         private final Rotation2d heading;
         private final double curvature;
 
@@ -99,6 +103,19 @@ public class Path {
             this.pose = pose;
             this.heading = heading;
             this.curvature = curvature;
+        }
+
+        public State(double distance, Pose2d pose, Rotation2d heading, double curvature, double radius) {
+            this.distance = distance;
+            this.pose = pose;
+            this.heading = heading;
+            this.curvature = curvature;
+            this.radius = radius;
+        }
+
+        public double getRadius()
+        {
+            return radius;
         }
 
         public double getDistance() {

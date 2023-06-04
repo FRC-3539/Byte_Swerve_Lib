@@ -19,7 +19,9 @@ public final class SimplePathBuilder {
 
     /**
      * A class used to build a path with simple lines and arcs.
-     * @param initialPose the starting pose of the robot at the beginning of this path.
+     * 
+     * @param initialPose the starting pose of the robot at the beginning of this
+     *                    path.
      */
     public SimplePathBuilder(Pose2d initialPose) {
         this.lastPosition = initialPose.getTranslation();
@@ -40,6 +42,7 @@ public final class SimplePathBuilder {
 
     /**
      * Build the path.
+     * 
      * @return The path.
      */
     public Path build() {
@@ -47,9 +50,12 @@ public final class SimplePathBuilder {
     }
 
     /**
-     * Add an arc to the path without a specific robot rotation. It will keep the last robot rotation.
-     * @param position 
-     * @return SimplePathBuilder object to add more segments to or to use to build the path.
+     * Add an arc to the path without a specific robot rotation. It will keep the
+     * last robot rotation.
+     * 
+     * @param position
+     * @return SimplePathBuilder object to add more segments to or to use to build
+     *         the path.
      */
     public SimplePathBuilder arcTo(Translation2d position, Translation2d center, boolean clockwise) {
         addSegment(new ArcSegment(lastPosition, position, center, clockwise));
@@ -58,8 +64,10 @@ public final class SimplePathBuilder {
 
     /**
      * Add an arc to the path with a specific robot rotation.
-     * @param pose The pose of the robot at the end of that arc segment. 
-     * @return SimplePathBuilder object to add more segments to or to use to build the path.
+     * 
+     * @param pose The pose of the robot at the end of that arc segment.
+     * @return SimplePathBuilder object to add more segments to or to use to build
+     *         the path.
      */
     public SimplePathBuilder arcTo(Pose2d pose, Translation2d center, boolean clockwise) {
         addSegment(new ArcSegment(lastPosition, pose.getTranslation(), center, clockwise), pose.getRotation());
@@ -67,9 +75,12 @@ public final class SimplePathBuilder {
     }
 
     /**
-     * Add an arc to the path without a specific robot rotation. It will keep the last robot rotation.
-     * @param position 
-     * @return SimplePathBuilder object to add more segments to or to use to build the path.
+     * Add an arc to the path without a specific robot rotation. It will keep the
+     * last robot rotation.
+     * 
+     * @param position
+     * @return SimplePathBuilder object to add more segments to or to use to build
+     *         the path.
      */
     public SimplePathBuilder arcTo(Translation2d position, Translation2d center) {
         addSegment(new ArcSegment(lastPosition, position, center));
@@ -78,8 +89,10 @@ public final class SimplePathBuilder {
 
     /**
      * Add an arc to the path with a specific robot rotation.
-     * @param pose The pose of the robot at the end of that arc segment. 
-     * @return SimplePathBuilder object to add more segments to or to use to build the path.
+     * 
+     * @param pose The pose of the robot at the end of that arc segment.
+     * @return SimplePathBuilder object to add more segments to or to use to build
+     *         the path.
      */
     public SimplePathBuilder arcTo(Pose2d pose, Translation2d center) {
         addSegment(new ArcSegment(lastPosition, pose.getTranslation(), center), pose.getRotation());
@@ -87,21 +100,52 @@ public final class SimplePathBuilder {
     }
 
     /**
-     * Add a line to the path without a specific robot rotation. It will keep the last robot rotation.
-     * @param position 
-     * @return SimplePathBuilder object to add more segments to or to use to build the path.
+     * Add a line to the path without a specific robot rotation. It will keep the
+     * last robot rotation.
+     * 
+     * @param position
+     * @return SimplePathBuilder object to add more segments to or to use to build
+     *         the path.
      */
     public SimplePathBuilder lineTo(Translation2d position) {
         addSegment(new LineSegment(lastPosition, position));
         return this;
     }
+
     /**
      * Add a line to the path with a specific robot rotation.
-     * @param pose The pose of the robot at the end of that line segment. 
-     * @return SimplePathBuilder object to add more segments to or to use to build the path.
+     * 
+     * @param pose The pose of the robot at the end of that line segment.
+     * @return SimplePathBuilder object to add more segments to or to use to build
+     *         the path.
      */
     public SimplePathBuilder lineTo(Pose2d pose) {
         addSegment(new LineSegment(lastPosition, pose.getTranslation()), pose.getRotation());
+        return this;
+    }
+
+    /**
+     * Add a line to the path with a specific robot rotation.
+     * 
+     * @param pose The pose of the robot at the end of that line segment.
+     * @return SimplePathBuilder object to add more segments to or to use to build
+     *         the path.
+     */
+    public SimplePathBuilder lineWithRadiusTo(Pose2d pose, double radius) {
+        addSegment(new LineSegmentWithRadius(lastPosition, pose.getTranslation(), 0.0, radius), pose.getRotation());
+        return this;
+    }
+
+    /**
+     * Add a line to the path without a specific robot rotation. It will keep the
+     * last robot rotation.
+     * 
+     * @param position
+     * @return SimplePathBuilder object to add more segments to or to use to build
+     *         the path.
+     */
+    public SimplePathBuilder lineWithRadiusTo(Translation2d position, double radius) {
+        addSegment(new LineSegmentWithRadius(lastPosition, position, 0.0, radius));
         return this;
     }
 
@@ -113,8 +157,9 @@ public final class SimplePathBuilder {
         private final Rotation2d arcAngle;
 
         private final double curvature;
+        private final double radius;
 
-        private  final double length;
+        private final double length;
 
         public ArcSegment(Translation2d start, Translation2d end, Translation2d center) {
             this.center = center;
@@ -132,10 +177,11 @@ public final class SimplePathBuilder {
 
             curvature = 1.0 / deltaStart.getNorm();
             length = deltaStart.getNorm() * arcAngle.getRadians();
+            
+            radius = start.getDistance(center);
         }
 
-        public ArcSegment(Translation2d start, Translation2d end, Translation2d center, boolean clockwise)
-        {
+        public ArcSegment(Translation2d start, Translation2d end, Translation2d center, boolean clockwise) {
             this.center = center;
             deltaStart = start.minus(center);
             deltaEnd = end.minus(center);
@@ -147,38 +193,44 @@ public final class SimplePathBuilder {
             var r2 = new Rotation2d(deltaEnd.getX(), deltaEnd.getY());
 
             this.clockwise = clockwise;
-            if(isClockwise != clockwise)
-            {
+            if (isClockwise != clockwise) {
                 arcAngle = Rotation2d.fromDegrees(
-                    Math.toDegrees(Angles.shortestAngularDistance(r1.getRadians(), r2.getRadians()))).minus(Rotation2d.fromDegrees(360));
-            }
-            else
-            {
+                        Math.toDegrees(Angles.shortestAngularDistance(r1.getRadians(), r2.getRadians())))
+                        .minus(Rotation2d.fromDegrees(360));
+            } else {
                 arcAngle = Rotation2d.fromDegrees(
-                    Math.toDegrees(Angles.shortestAngularDistance(r1.getRadians(), r2.getRadians())));
+                        Math.toDegrees(Angles.shortestAngularDistance(r1.getRadians(), r2.getRadians())));
             }
 
             curvature = 1.0 / deltaStart.getNorm();
             length = deltaStart.getNorm() * arcAngle.getRadians();
+            radius = start.getDistance(center);
         }
 
         @Override
         public State calculate(double distance) {
             double percentage = distance / length;
 
-            Translation2d sampleHeading = deltaStart.rotateBy(Rotation2d.fromDegrees(percentage + (clockwise ? -1.0 : 1.0) * 90));
+            Translation2d sampleHeading = deltaStart
+                    .rotateBy(Rotation2d.fromDegrees(percentage + (clockwise ? -1.0 : 1.0) * 90));
             Rotation2d newHeading = new Rotation2d(sampleHeading.getX(), sampleHeading.getY());
 
             return new State(
                     center.plus(deltaStart.rotateBy(Rotation2d.fromDegrees(percentage))),
                     newHeading,
-                    curvature
-            );
+                    curvature);
         }
 
         @Override
         public double getLength() {
-            return length; //deltaStart.length * Vector2.getAngleBetween(deltaStart, deltaEnd).toRadians();
+            return length; // deltaStart.length * Vector2.getAngleBetween(deltaStart,
+                           // deltaEnd).toRadians();
+        }
+
+        @Override
+        public double getRadius()
+        {
+            return radius;
         }
     }
 
@@ -198,8 +250,47 @@ public final class SimplePathBuilder {
             return new State(
                     start.plus(delta.times(distance / getLength())),
                     heading,
-                    0.0
-            );
+                    0.0);
+        }
+        @Override
+        public double getRadius()
+        {
+            return 0.0;
+        }
+
+        @Override
+        public double getLength() {
+            return delta.getNorm();
+        }
+    }
+
+    public static final class LineSegmentWithRadius extends PathSegment {
+        private final Translation2d start;
+        private final Translation2d delta;
+        private final Rotation2d heading;
+        private final double curvature;
+        private final double radius;
+
+        private LineSegmentWithRadius(Translation2d start, Translation2d end, double curvature, double radius) {
+            this.start = start;
+            this.delta = end.minus(start);
+            this.heading = new Rotation2d(delta.getX(), delta.getY());
+            this.curvature = curvature;
+            this.radius = radius;
+        }
+
+        @Override
+        public double getRadius()
+        {
+            return radius;
+        }
+
+        @Override
+        public State calculate(double distance) {
+            return new State(
+                    start.plus(delta.times(distance / getLength())),
+                    heading,
+                    curvature);
         }
 
         @Override

@@ -16,6 +16,8 @@ public abstract class PathSegment {
 
     public abstract double getLength();
 
+    public abstract double getRadius();
+
     public static class State {
         private final Translation2d position;
         private final Rotation2d heading;
