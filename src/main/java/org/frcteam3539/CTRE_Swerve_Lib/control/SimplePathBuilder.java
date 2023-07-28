@@ -166,18 +166,20 @@ public final class SimplePathBuilder {
             deltaStart = start.minus(center);
             deltaEnd = end.minus(center);
 
-            var cross = deltaStart.getX() * deltaEnd.getY() - deltaStart.getY() * deltaEnd.getX();
-            clockwise = cross <= 0.0;
-
             var r1 = new Rotation2d(deltaStart.getX(), deltaStart.getY());
             var r2 = new Rotation2d(deltaEnd.getX(), deltaEnd.getY());
 
             arcAngle = Rotation2d.fromDegrees(
                     Math.toDegrees(Angles.shortestAngularDistance(r1.getRadians(), r2.getRadians())));
 
+            if (arcAngle.getDegrees() < 0) {
+                clockwise = false;
+            } else {
+                clockwise = true;
+            }
+
             curvature = 1.0 / deltaStart.getNorm();
-            length = deltaStart.getNorm() * arcAngle.getRadians();
-            
+            length = Math.abs(deltaStart.getNorm() * arcAngle.getRadians());
             radius = start.getDistance(center);
         }
 
@@ -193,17 +195,21 @@ public final class SimplePathBuilder {
             var r2 = new Rotation2d(deltaEnd.getX(), deltaEnd.getY());
 
             this.clockwise = clockwise;
+            Rotation2d tempArcAngle = Rotation2d
+                    .fromDegrees(Math.toDegrees(Angles.shortestAngularDistance(r1.getRadians(), r2.getRadians())));
+
             if (isClockwise != clockwise) {
-                arcAngle = Rotation2d.fromDegrees(
-                        Math.toDegrees(Angles.shortestAngularDistance(r1.getRadians(), r2.getRadians())))
-                        .minus(Rotation2d.fromDegrees(360));
-            } else {
-                arcAngle = Rotation2d.fromDegrees(
-                        Math.toDegrees(Angles.shortestAngularDistance(r1.getRadians(), r2.getRadians())));
+                if (tempArcAngle.getDegrees() > 0) {
+                    tempArcAngle = Rotation2d.fromDegrees(360 - tempArcAngle.getDegrees());
+                } else {
+                    tempArcAngle = Rotation2d.fromDegrees(360 + tempArcAngle.getDegrees());
+                }
             }
 
+            arcAngle = tempArcAngle;
+
             curvature = 1.0 / deltaStart.getNorm();
-            length = deltaStart.getNorm() * arcAngle.getRadians();
+            length = Math.abs(deltaStart.getNorm() * arcAngle.getRadians());
             radius = start.getDistance(center);
         }
 
@@ -212,11 +218,11 @@ public final class SimplePathBuilder {
             double percentage = distance / length;
 
             Translation2d sampleHeading = deltaStart
-                    .rotateBy(Rotation2d.fromDegrees(percentage + (clockwise ? -1.0 : 1.0) * 90));
+                    .rotateBy(Rotation2d.fromDegrees(percentage * Math.abs(arcAngle.getDegrees()) * (clockwise?-1.0:1.0)));
             Rotation2d newHeading = new Rotation2d(sampleHeading.getX(), sampleHeading.getY());
 
             return new State(
-                    center.plus(deltaStart.rotateBy(Rotation2d.fromDegrees(percentage))),
+                    center.plus(deltaStart.rotateBy(Rotation2d.fromDegrees(percentage * Math.abs(arcAngle.getDegrees())* (clockwise?-1.0:1.0)))),
                     newHeading,
                     curvature);
         }
@@ -228,8 +234,7 @@ public final class SimplePathBuilder {
         }
 
         @Override
-        public double getRadius()
-        {
+        public double getRadius() {
             return radius;
         }
     }
@@ -252,9 +257,9 @@ public final class SimplePathBuilder {
                     heading,
                     0.0);
         }
+
         @Override
-        public double getRadius()
-        {
+        public double getRadius() {
             return 0.0;
         }
 
@@ -280,8 +285,7 @@ public final class SimplePathBuilder {
         }
 
         @Override
-        public double getRadius()
-        {
+        public double getRadius() {
             return radius;
         }
 
