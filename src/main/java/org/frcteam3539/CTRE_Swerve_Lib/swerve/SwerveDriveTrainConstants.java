@@ -9,21 +9,39 @@ public class SwerveDriveTrainConstants {
     public double turnKp = 0;
     public double turnKd = 0;
 
+    /**
+     * 
+     * @param id of the pigeon2
+     * @return Swerve Drivetrain Constants
+     */
     public SwerveDriveTrainConstants withPigeon2Id(int id) {
         this.pigeon2Id = id;
         return this;
     }
 
+    /**
+     * 
+     * @param name of the canbus
+     * @return Swerve Drivetrain Constants
+     */
     public SwerveDriveTrainConstants withCANbusName(String name) {
         this.CANbusName = name;
         return this;
     }
-
+    /**
+     * 
+     * @param turnKp P gain for robot turning.
+     * @return Swerve Drivetrain Constants
+     */
     public SwerveDriveTrainConstants withTurnKp(double turnKp) {
         this.turnKp = turnKp;
         return this;
     }
-
+    /**
+     * 
+     * @param turnKd D gain for robot turning.
+     * @return Swerve Drivetrain Constants
+     */
     public SwerveDriveTrainConstants withTurnKd(double turnKd) {
         this.turnKd = turnKd;
         return this;

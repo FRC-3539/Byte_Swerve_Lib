@@ -32,6 +32,11 @@ public class CTRSwerveModule {
 
     private SwerveModulePosition m_internalState = new SwerveModulePosition();
 
+    /**
+     * Creates a new swerve module.
+     * @param constants Constants of the module including ids, pid values, and other constants.
+     * @param canbusName Canbus name of the devices in this module.
+     */
     public CTRSwerveModule(SwerveModuleConstants constants, String canbusName) {
         m_driveMotor = new TalonFX(constants.driveMotorId, canbusName);
         m_steerMotor = new TalonFX(constants.steerMotorId, canbusName);
@@ -83,6 +88,11 @@ public class CTRSwerveModule {
         m_driveRotationsPerMeter = rotationsPerWheelRotation / metersPerWheelRotation;
     }
 
+    /**
+     * 
+     * @return The module position.
+     * @see SwerveModulePosition
+     */
     public SwerveModulePosition getPosition() {
         /* Refresh all signals */
         m_drivePosition.refresh();
@@ -102,6 +112,12 @@ public class CTRSwerveModule {
 
         return m_internalState;
     }
+
+    /**
+     * Set the state of the module.
+     * @param state Swerve module state to be applied
+     * @see SwerveModuleState
+     */
 
     public void apply(SwerveModuleState state) {
         var optimized = SwerveModuleState.optimize(state, m_internalState.angle);

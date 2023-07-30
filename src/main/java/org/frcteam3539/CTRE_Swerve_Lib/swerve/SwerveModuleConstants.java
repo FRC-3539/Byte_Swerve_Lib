@@ -2,6 +2,9 @@ package org.frcteam3539.CTRE_Swerve_Lib.swerve;
 
 import com.ctre.phoenixpro.configs.Slot0Configs;
 
+/**
+ * Class to hold all constants related to a specific swerve module.
+ */
 public class SwerveModuleConstants {
     /** CAN ID of the drive motor */
     public int driveMotorId = 0;

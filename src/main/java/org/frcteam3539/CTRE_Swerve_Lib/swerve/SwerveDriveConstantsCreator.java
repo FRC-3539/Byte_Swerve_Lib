@@ -20,6 +20,16 @@ public class SwerveDriveConstantsCreator {
     /** True if the steering motor is reversed from the CANcoder */
     public boolean steerMotorReversed;
 
+    /**
+     * Class to help create multiple swerve module constants
+     * @param swerveModuleDriveRatio Drive ratio for swerve modules. 10:1 would be 10.0
+     * @param swerveModuleSteerRatio Steer ratio for swerve modules. 10:1 would be 10.0
+     * @param swerveModuleWheelRadius Radius of swerve module wheel (recommended to be in meters).
+     * @param swerveModuleSlipCurrent Module slip current (limits motor torque to prevent wheel slip)
+     * @param swerveModuleSteerGains Module steering gains aka pid.
+     * @param swerveModuleDriveGains Module drive gains aka pid.
+     * @param steerMotorReversed is the motor steering inverted from the cancoder.
+     */
     public SwerveDriveConstantsCreator(
             double swerveModuleDriveRatio,
             double swerveModuleSteerRatio,
@@ -38,6 +48,16 @@ public class SwerveDriveConstantsCreator {
         this.steerMotorReversed = steerMotorReversed;
     }
 
+    /**
+     * 
+     * @param steerId Steering id for specific module.
+     * @param driveId Drive id for specific module.
+     * @param cancoderId CanCoder id for specific module.
+     * @param cancoderOffset CanCoder offset for specific module in rotations.
+     * @param locationX X Location of the swerve module. Uses WPILIB cordinate system.
+     * @param locationY Y Location of the swerve module. Uses WPILIB cordinate system.
+     * @return the specific module constants.
+     */
     public SwerveModuleConstants createModuleConstants(
             int steerId,
             int driveId,

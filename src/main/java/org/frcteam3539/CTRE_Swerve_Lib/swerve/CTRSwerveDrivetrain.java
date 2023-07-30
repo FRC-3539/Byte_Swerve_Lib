@@ -18,6 +18,10 @@ import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 
+
+/**
+ * A Swerve class that takes advantage of the benifits of pheonix pro for more accurate control of your robot.
+ */
 public class CTRSwerveDrivetrain {
     private final int ModuleCount;
 
@@ -87,7 +91,15 @@ public class CTRSwerveDrivetrain {
             }
         }
     }
-
+    /**
+     * 
+     * @param tab Shuffleboard tab, Pose2d, successes, and errors will be linked to this.
+     * @param driveTrainConstants Swerve drive constants including canbus name, robot rotation pid values, and pigeon id.
+     * @param modules All the swervemodule constants including motor ids, cancoder ids, encoder offsets and other module constants.
+     * @see ShuffleboardTab
+     * @see SwerveDriveTrainConstants
+     * @see SwerveModuleConstants
+     */
     public CTRSwerveDrivetrain(ShuffleboardTab tab,
             SwerveDriveTrainConstants driveTrainConstants, SwerveModuleConstants... modules) {
         ModuleCount = modules.length;
@@ -138,10 +150,19 @@ public class CTRSwerveDrivetrain {
         m_odometryThread.start();
     }
 
+    /**
+     * 
+     * @return The list of module positions. Given in the order as which this was constructed.
+     */
     public SwerveModulePosition[] getSwervePositions() {
         return m_modulePositions;
     }
 
+    /**
+     * Drive the robot using chassis speeds. 
+     * @param speeds 
+     * @see ChassisSpeeds
+     */
     public void driveRobotCentric(ChassisSpeeds speeds) {
         var swerveStates = m_kinematics.toSwerveModuleStates(speeds);
         SwerveDriveKinematics.desaturateWheelSpeeds(swerveStates, MAX_VELOCITY_METERS_PER_SECOND);
@@ -150,19 +171,16 @@ public class CTRSwerveDrivetrain {
         }
     }
 
+    /**
+     * Reset the robots position.
+     * @param pose2d pose to set the odometry to.
+     * @see Pose2d
+     */
     public void resetPosition(Pose2d pose2d)
     {
         m_odometry.resetPosition(getGyroAngle(), m_modulePositions, pose2d);
     }
 
-    public void driveFieldCentric(ChassisSpeeds speeds) {
-        ChassisSpeeds roboCentric = ChassisSpeeds.fromFieldRelativeSpeeds(speeds, getGyroAngle());
-        var swerveStates = m_kinematics.toSwerveModuleStates(roboCentric);
-        SwerveDriveKinematics.desaturateWheelSpeeds(swerveStates, MAX_VELOCITY_METERS_PER_SECOND);
-        for (int i = 0; i < ModuleCount; ++i) {
-            m_modules[i].apply(swerveStates[i]);
-        }
-    }
 
     private Rotation2d getGyroAngle()
     {
@@ -170,11 +188,21 @@ public class CTRSwerveDrivetrain {
                                 m_pigeon2.getYaw(), m_pigeon2.getAngularVelocityZ()));
     }
 
+    /**
+     * Use full for getting angles from the pigeon for use in other subsystems and commands.
+     * @return
+     */
     public Pigeon2 getPigeon2()
     {
         return this.m_pigeon2;
     }
 
+    /**
+     * Drive using xy speeds and an angle which the robot will turn to face.
+     * @param xSpeeds
+     * @param ySpeeds
+     * @param targetAngle
+     */
     public void driveFullyFieldCentric(double xSpeeds, double ySpeeds, Rotation2d targetAngle) {
         var currentAngle = getGyroAngle();
         double rotationalSpeed =
@@ -191,16 +219,27 @@ public class CTRSwerveDrivetrain {
         }
     }
 
+    /**
+     * Get max speed of the robot. Useful for scaling joysticks to chassis speeds.
+     * @return
+     */
     public double getMaxVelocity()
     {
         return MAX_VELOCITY_METERS_PER_SECOND;
     }
 
+    /**
+     * Get max angular speed of the robot. Useful for scaling joysticks to chassis speeds.
+     * @return
+     */
     public double getMaxRotationVelocity()
     {
         return MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
     }
 
+    /**
+     * Stop robot motion and lock motors in an x pattern.
+     */
     public void driveStopMotion() {
         /* Point every module toward (0,0) to make it close to a X configuration */
         for (int i = 0; i < ModuleCount; ++i) {
@@ -209,14 +248,26 @@ public class CTRSwerveDrivetrain {
         }
     }
 
+    /**
+     * Set pigeon angle to 0.
+     */
     public void seedFieldRelative() {
         m_pigeon2.setYaw(0);
     }
 
+    /**
+     * Set pigeon angle.
+     * @param angle
+     */
     public void setGyro(double angle) {
         m_pigeon2.setYaw(angle);
     }
 
+    /**
+     * Get robot pose.
+     * @return Robot pose
+     * @see Pose2d
+     */
     public Pose2d getPoseMeters() {
         return m_odometry.getEstimatedPosition();
     }
