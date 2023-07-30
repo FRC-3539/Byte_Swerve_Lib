@@ -138,7 +138,7 @@ public class CTRSwerveDrivetrain {
         m_odometryThread.start();
     }
 
-    private SwerveModulePosition[] getSwervePositions() {
+    public SwerveModulePosition[] getSwervePositions() {
         return m_modulePositions;
     }
 
