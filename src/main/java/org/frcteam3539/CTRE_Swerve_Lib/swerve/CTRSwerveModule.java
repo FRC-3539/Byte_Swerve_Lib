@@ -89,6 +89,17 @@ public class CTRSwerveModule {
     }
 
     /**
+     * Apply an offset to the cancoder useful for updating module zeroing on the fly.
+     * @param rotations
+     */
+    public void setCANcoderOffset(double rotations)
+    {
+        CANcoderConfiguration cancoderConfigs = new CANcoderConfiguration();
+        cancoderConfigs.MagnetSensor.MagnetOffset = rotations;
+        m_cancoder.getConfigurator().apply(cancoderConfigs);
+    }
+
+    /**
      * 
      * @return The module position.
      * @see SwerveModulePosition

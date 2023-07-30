@@ -159,6 +159,14 @@ public class CTRSwerveDrivetrain {
     }
 
     /**
+     * 
+     * @return The list of modules. Given in the order as which this was constructed.
+     */
+    public CTRSwerveModule[] getModules() {
+        return m_modules;
+    }
+
+    /**
      * Drive the robot using chassis speeds. 
      * @param speeds 
      * @see ChassisSpeeds
