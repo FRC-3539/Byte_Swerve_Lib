@@ -85,8 +85,10 @@ public class CTRSwerveDrivetrain {
                 double yawDegrees =
                         BaseStatusSignalValue.getLatencyCompensatedValue(
                                 m_pigeon2.getYaw(), m_pigeon2.getAngularVelocityZ());
-
-                m_odometry.update(Rotation2d.fromDegrees(yawDegrees), m_modulePositions);
+                synchronized(m_odometry)
+                {
+                    m_odometry.update(Rotation2d.fromDegrees(yawDegrees), m_modulePositions);
+                }
                 m_field.setRobotPose(m_odometry.getEstimatedPosition());
             }
         }
