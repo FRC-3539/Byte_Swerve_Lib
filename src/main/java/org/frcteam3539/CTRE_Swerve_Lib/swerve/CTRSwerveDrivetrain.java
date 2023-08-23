@@ -2,10 +2,12 @@ package org.frcteam3539.CTRE_Swerve_Lib.swerve;
 
 import java.util.Arrays;
 import com.ctre.phoenixpro.BaseStatusSignalValue;
+import com.ctre.phoenixpro.Utils;
 import com.ctre.phoenixpro.hardware.Pigeon2;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
+import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -43,10 +45,16 @@ public class CTRSwerveDrivetrain {
         public int SuccessfulDaqs = 0;
         public int FailedDaqs = 0;
 
+        private LinearFilter lowpass = LinearFilter.movingAverage(50);
+        private double lastTime = 0;
+        private double currentTime = 0;
+        private double averageLoopTime = 0;
+
         public OdometryThread(ShuffleboardTab tab) {
             super();
             // 4 signals for each module + 2 for Pigeon2
             m_allSignals = new BaseStatusSignalValue[(ModuleCount * 4) + 2];
+
             for (int i = 0; i < ModuleCount; ++i) {
                 var signals = m_modules[i].getSignals();
                 m_allSignals[(i * 4) + 0] = signals[0];
@@ -57,21 +65,29 @@ public class CTRSwerveDrivetrain {
             m_allSignals[m_allSignals.length - 2] = m_pigeon2.getYaw();
             m_allSignals[m_allSignals.length - 1] = m_pigeon2.getAngularVelocityZ();
 
-            tab.addNumber("Successful Daqs", ()->{return SuccessfulDaqs;});
-            tab.addNumber("Failed Daqs", ()->{return FailedDaqs;});
-            tab.addNumber("X Pos", ()->{return m_odometry.getEstimatedPosition().getX();});
-            tab.addNumber("Y Pos", ()->{return m_odometry.getEstimatedPosition().getY();});
-            tab.addNumber("Angle", ()->{return m_odometry.getEstimatedPosition().getRotation().getDegrees();});
+            if(tab != null)
+            {
+                tab.addNumber("Successful Daqs", ()->{return SuccessfulDaqs;});
+                tab.addNumber("Failed Daqs", ()->{return FailedDaqs;});
+                tab.addNumber("X Pos", ()->{return m_odometry.getEstimatedPosition().getX();});
+                tab.addNumber("Y Pos", ()->{return m_odometry.getEstimatedPosition().getY();});
+                tab.addNumber("Angle", ()->{return m_odometry.getEstimatedPosition().getRotation().getDegrees();});
+                tab.addNumber("Odometry Loop Time", ()->{return averageLoopTime;});
+            }
         }
         @Override
         public void run() {
             /* Run as fast as possible, our signals will control the timing */
             while (true) {
                 /* Synchronously wait for all signals in drivetrain */
-                BaseStatusSignalValue.waitForAll(0.1, m_allSignals);
+                var status = BaseStatusSignalValue.waitForAll(0.1, m_allSignals);
+
+                lastTime = currentTime;
+                currentTime = Utils.getCurrentTimeSeconds();
+                averageLoopTime = lowpass.calculate(currentTime - lastTime);
 
                 /* Get status of first element */
-                if (m_allSignals[0].getError().isOK()) {
+                if (status.isOK()) {
                     SuccessfulDaqs++;
                 } else {
                     FailedDaqs++;
@@ -79,7 +95,7 @@ public class CTRSwerveDrivetrain {
 
                 /* Now update odometry */
                 for (int i = 0; i < ModuleCount; ++i) {
-                    m_modulePositions[i] = m_modules[i].getPosition();
+                    m_modulePositions[i] = m_modules[i].getPosition(false);
                 }
                 // Assume Pigeon2 is flat-and-level so latency compensation can be performed
                 double yawDegrees =
@@ -123,7 +139,7 @@ public class CTRSwerveDrivetrain {
             
             m_modules[iteration] = new CTRSwerveModule(module, driveTrainConstants.CANbusName);
             m_moduleLocations[iteration] = new Translation2d(module.locationX, module.locationY);
-            m_modulePositions[iteration] = m_modules[iteration].getPosition();
+            m_modulePositions[iteration] = m_modules[iteration].getPosition(true);
 
             iteration++;
         }
@@ -280,6 +296,10 @@ public class CTRSwerveDrivetrain {
      */
     public Pose2d getPoseMeters() {
         return m_odometry.getEstimatedPosition();
+    }
+
+    public double getTime() {
+        return m_odometryThread.averageLoopTime;
     }
 
     public double getSuccessfulDaqs() {

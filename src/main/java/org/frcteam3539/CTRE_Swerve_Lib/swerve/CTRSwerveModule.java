@@ -104,12 +104,14 @@ public class CTRSwerveModule {
      * @return The module position.
      * @see SwerveModulePosition
      */
-    public SwerveModulePosition getPosition() {
-        /* Refresh all signals */
-        m_drivePosition.refresh();
-        m_driveVelocity.refresh();
-        m_steerPosition.refresh();
-        m_steerVelocity.refresh();
+    public SwerveModulePosition getPosition(boolean refresh) {
+        if (refresh) {
+            /* Refresh all signals */
+            m_drivePosition.refresh();
+            m_driveVelocity.refresh();
+            m_steerPosition.refresh();
+            m_steerVelocity.refresh();
+        }
 
         /* Now latency-compensate our signals */
         double drive_rot = BaseStatusSignalValue.getLatencyCompensatedValue(m_drivePosition, m_driveVelocity);
