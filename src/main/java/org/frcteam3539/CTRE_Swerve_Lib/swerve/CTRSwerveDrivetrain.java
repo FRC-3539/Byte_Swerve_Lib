@@ -69,8 +69,7 @@ public class CTRSwerveDrivetrain {
             {
                 tab.addNumber("Successful Daqs", ()->{return SuccessfulDaqs;});
                 tab.addNumber("Failed Daqs", ()->{return FailedDaqs;});
-                tab.addNumber("X Pos", ()->{return m_odometry.getEstimatedPosition().getX();});
-                tab.addNumber("Y Pos", ()->{return m_odometry.getEstimatedPosition().getY();});
+                tab.addDoubleArray("Pose", ()->{return new double[]{m_odometry.getEstimatedPosition().getX(), m_odometry.getEstimatedPosition().getY(), m_odometry.getEstimatedPosition().getRotation().getRadians()};});
                 tab.addNumber("Angle", ()->{return m_odometry.getEstimatedPosition().getRotation().getDegrees();});
                 tab.addNumber("Odometry Loop Time", ()->{return averageLoopTime;});
             }
@@ -105,7 +104,6 @@ public class CTRSwerveDrivetrain {
                 {
                     m_odometry.update(Rotation2d.fromDegrees(yawDegrees), m_modulePositions);
                 }
-                m_field.setRobotPose(m_odometry.getEstimatedPosition());
             }
         }
     }
@@ -158,8 +156,6 @@ public class CTRSwerveDrivetrain {
 			VecBuilder.fill(0.01, 0.01, Units.degreesToRadians(0)),
 			VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(10))
 		);
-        m_field = new Field2d();
-        tab.add("Field", m_field);
 
         m_turnPid = new PIDController(driveTrainConstants.turnKp, 0, driveTrainConstants.turnKd);
         m_turnPid.enableContinuousInput(-Math.PI, Math.PI);
