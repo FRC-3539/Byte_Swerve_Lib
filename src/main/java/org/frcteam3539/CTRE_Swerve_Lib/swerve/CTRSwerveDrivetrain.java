@@ -16,9 +16,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 
 
 /**
@@ -34,7 +32,6 @@ public class CTRSwerveDrivetrain {
     private SwerveModulePosition[] m_modulePositions;
     private Translation2d[] m_moduleLocations;
     private OdometryThread m_odometryThread;
-    private Field2d m_field;
     private PIDController m_turnPid;
     private double MAX_VELOCITY_METERS_PER_SECOND = Double.MAX_VALUE;
     private double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = 0.0;
