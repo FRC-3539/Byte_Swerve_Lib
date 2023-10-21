@@ -1,7 +1,7 @@
 {
   "fileName": "CTRE_Swerve_Lib.json",
   "name": "CTRE_Swerve_Lib",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "uuid": "de9d060e-eae0-11ed-a05b-0242ac120003",
   "mavenUrls": [
     "https://jitpack.io"
@@ -11,7 +11,7 @@
     {
       "groupId": "com.github.BytingBulldogs3539",
       "artifactId": "CTRE_Swerve_Lib",
-      "version": "1.2.0"
+      "version": "1.2.1"
     }
   ],
   "jniDependencies": [],
