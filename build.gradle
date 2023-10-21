@@ -13,11 +13,11 @@ targetCompatibility = JavaVersion.VERSION_11
 
 allprojects {
     group = 'com.github.BytingBulldogs3539.CTRE_Swerve_Lib'
-    version = '1.1.1'
+    version = '1.2.0'
 
     repositories {
         mavenCentral()
-        maven {url = 'https://frcmaven.wpi.edu/artifactory/release/'}
+        maven {url = 'https://frcmaven.wpi.edu/artifactory/development/'}
         
         // CTRE
         maven { url = uri('https://devsite.ctr-electronics.com/maven/release/') }
@@ -25,16 +25,16 @@ allprojects {
 }
 
 dependencies {
-    api group: 'edu.wpi.first.wpimath', name: 'wpimath-java', version: '2023.4.3'
-    api group: 'edu.wpi.first.wpimath', name: 'wpimath-jni', version: '2023.4.3', classifier: 'windowsx86-64'
+    api group: 'edu.wpi.first.wpimath', name: 'wpimath-java', version: '2024.1.1-beta-1'
+    api group: 'edu.wpi.first.wpimath', name: 'wpimath-jni', version: '2024.1.1-beta-1', classifier: 'windowsx86-64'
 
-    api group: 'edu.wpi.first.wpiutil', name: 'wpiutil-java', version: '2023.4.3'
-    api group: 'edu.wpi.first.wpiutil', name: 'wpiutil-jni', version: '2023.4.3', classifier: 'windowsx86-64'
+    api group: 'edu.wpi.first.wpiutil', name: 'wpiutil-java', version: '2024.1.1-beta-1'
+    api group: 'edu.wpi.first.wpiutil', name: 'wpiutil-jni', version: '2024.1.1-beta-1', classifier: 'windowsx86-64'
 
-    api group: 'edu.wpi.first.wpilibj', name: 'wpilibj-java', version: '2023.4.3'
+    api group: 'edu.wpi.first.wpilibj', name: 'wpilibj-java', version: '2024.1.1-beta-1'
 
-    api group: 'edu.wpi.first.ntcore', name: 'ntcore-java', version: '2023.4.3'
-    api group: 'edu.wpi.first.cscore', name: 'cscore-java', version: '2023.4.3'
+    api group: 'edu.wpi.first.ntcore', name: 'ntcore-java', version: '2024.1.1-beta-1'
+    api group: 'edu.wpi.first.cscore', name: 'cscore-java', version: '2024.1.1-beta-1'
 
 
 
@@ -54,8 +54,8 @@ dependencies {
     errorprone group: 'com.google.errorprone', name: 'error_prone_core', version: '2.10.0'
 
         // CTRE is implementation because it is not a hard requirement
-    implementation 'com.ctre.phoenixpro:api-java:23.0.12'
-    implementation 'com.ctre.phoenixpro:wpiapi-java:23.0.12'
+    implementation 'com.ctre.phoenix6:api-java:24.0.0-beta-1'
+    implementation 'com.ctre.phoenix6:wpiapi-java:24.0.0-beta-1'
 }
 
 tasks.withType(JavaCompile).configureEach {
