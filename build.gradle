@@ -23,10 +23,10 @@ allprojects {
 
 dependencies {
     api group: 'edu.wpi.first.wpimath', name: 'wpimath-java', version: '2024.1.1'
-    api group: 'edu.wpi.first.wpimath', name: 'wpimath-jni', version: '2024.1.1', classifier: 'windowsx86-64'
 
     api group: 'edu.wpi.first.wpiutil', name: 'wpiutil-java', version: '2024.1.1'
-    api group: 'edu.wpi.first.wpiutil', name: 'wpiutil-jni', version: '2024.1.1', classifier: 'windowsx86-64'
+
+    api group: 'edu.wpi.first.wpiunits', name: 'wpiunits-java', version: '2024.1.1'
 
     api group: 'edu.wpi.first.wpilibj', name: 'wpilibj-java', version: '2024.1.1'
 
