@@ -12,8 +12,8 @@ sourceCompatibility = JavaVersion.VERSION_17
 targetCompatibility = JavaVersion.VERSION_17
 
 allprojects {
-    group = 'com.github.BytingBulldogs3539.CTRE_Swerve_Lib'
-    version = '1.2.1'
+    group = 'com.github.BytingBulldogs3539.Byte_Swerve_Lib'
+    version = '1.3.0'
 
     repositories {
         mavenCentral()
@@ -22,16 +22,16 @@ allprojects {
 }
 
 dependencies {
-    api group: 'edu.wpi.first.wpimath', name: 'wpimath-java', version: '2024.1.1-beta-2'
-    api group: 'edu.wpi.first.wpimath', name: 'wpimath-jni', version: '2024.1.1-beta-2', classifier: 'windowsx86-64'
+    api group: 'edu.wpi.first.wpimath', name: 'wpimath-java', version: '2024.1.1'
+    api group: 'edu.wpi.first.wpimath', name: 'wpimath-jni', version: '2024.1.1', classifier: 'windowsx86-64'
 
-    api group: 'edu.wpi.first.wpiutil', name: 'wpiutil-java', version: '2024.1.1-beta-2'
-    api group: 'edu.wpi.first.wpiutil', name: 'wpiutil-jni', version: '2024.1.1-beta-2', classifier: 'windowsx86-64'
+    api group: 'edu.wpi.first.wpiutil', name: 'wpiutil-java', version: '2024.1.1'
+    api group: 'edu.wpi.first.wpiutil', name: 'wpiutil-jni', version: '2024.1.1', classifier: 'windowsx86-64'
 
-    api group: 'edu.wpi.first.wpilibj', name: 'wpilibj-java', version: '2024.1.1-beta-2'
+    api group: 'edu.wpi.first.wpilibj', name: 'wpilibj-java', version: '2024.1.1'
 
-    api group: 'edu.wpi.first.ntcore', name: 'ntcore-java', version: '2024.1.1-beta-2'
-    api group: 'edu.wpi.first.cscore', name: 'cscore-java', version: '2024.1.1-beta-2'
+    api group: 'edu.wpi.first.ntcore', name: 'ntcore-java', version: '2024.1.1'
+    api group: 'edu.wpi.first.cscore', name: 'cscore-java', version: '2024.1.1'
 
 
 
