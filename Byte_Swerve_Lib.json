@@ -7,7 +7,7 @@
   "mavenUrls": [
     "https://jitpack.io"
   ],
-  "jsonUrl": "https://raw.githubusercontent.com/BytingBulldogs3539/Byte_Swerve_Lib/main/Byte_Swerve_Lib.json",
+  "jsonUrl": "https://raw.githubusercontent.com/BytingBulldogs3539/Byte_Swerve_Lib/2024/Byte_Swerve_Lib.json",
   "javaDependencies": [
     {
       "groupId": "com.github.BytingBulldogs3539",
