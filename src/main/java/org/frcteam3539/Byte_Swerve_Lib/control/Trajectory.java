@@ -13,6 +13,11 @@ public class Trajectory {
     private List<ConstrainedPathState> constrainedPathStates = new ArrayList<>();
     private double[] pathStateStartTimes;
 
+    private TrajectoryConstraint[] constraints;
+
+    private double trajectoryStartingVelocity = 0;
+    private double trajectoryEndingVelocity = 0;
+
     public Trajectory(Path path, TrajectoryConstraint[] trajectoryConstraints, double sampleDistance) {
         this(path, trajectoryConstraints, sampleDistance, 0.0, 0.0);
     }
@@ -20,6 +25,9 @@ public class Trajectory {
     public Trajectory(Path path, TrajectoryConstraint[] trajectoryConstraints, double sampleDistance,
             double trajectoryStartingVelocity, double trajectoryEndingVelocity) {
         this.path = path;
+        this.constraints = trajectoryConstraints;
+        this.trajectoryStartingVelocity = trajectoryStartingVelocity;
+        this.trajectoryEndingVelocity = trajectoryEndingVelocity;
 
         double distance = 0.0;
         ConstrainedPathState lastState = new ConstrainedPathState(
@@ -182,6 +190,18 @@ public class Trajectory {
 
     public double getDuration() {
         return duration;
+    }
+
+    public TrajectoryConstraint[] getConstraints() {
+        return this.constraints;
+    }
+
+    public double getTrajectoryStartingVelocity() {
+        return this.trajectoryStartingVelocity;
+    }
+
+    public double getTrajectoryEndingVelocity() {
+        return this.trajectoryEndingVelocity;
     }
 
     public Path getPath() {
