@@ -28,10 +28,19 @@ public class BBMPLoader {
     /**
      * 
      * @param filename File name with extension but no directory.
-     * @param debug use debug prints
+     * @param debug    use debug prints
      */
     public BBMPLoader(String filename, boolean debug) {
         trajectories = getTrajectories(filename, debug);
+    }
+
+    /**
+     * 
+     * @param filename File name with extension but no directory.
+     * @param debug    use debug prints
+     */
+    public BBMPLoader(String filename) {
+        this(filename, false);
     }
 
     public BBMPLoader(BBPath path) {
@@ -56,6 +65,9 @@ public class BBMPLoader {
         return trajectories[0];
     }
 
+    /**
+     * Get the next trajectory in the file.
+     */
     public Trajectory getNextTrajectory() {
         if (trajectories == null) {
             return null;
@@ -64,6 +76,24 @@ public class BBMPLoader {
             return null;
         }
         currentTrajectory++;
+        if (currentTrajectory > trajectories.length - 1) {
+            return null;
+        }
+        return trajectories[currentTrajectory];
+    }
+
+    /**
+     * Get the Current Trajectory (must call getNextTrajectory first)
+     * 
+     * @return The Trajectory that was last returned from getNextTrajectory()
+     */
+    public Trajectory getCurrentTrajectory() {
+        if (trajectories == null) {
+            return null;
+        }
+        if (trajectories.length == 0) {
+            return null;
+        }
         if (currentTrajectory > trajectories.length - 1) {
             return null;
         }
@@ -124,11 +154,26 @@ public class BBMPLoader {
         double[][] constraintsParsed = new double[paths.size()][];
         for (int i = 0; i < paths.size(); i++) {
             String[] constraintsList = constraints.get(i).split(" ");
-            constraintsParsed[i] = new double[] {
-                    Double.parseDouble(constraintsList[0]),
-                    Double.parseDouble(constraintsList[1]),
-                    Double.parseDouble(constraintsList[2])
-            };
+            if (constraintsList.length == 3) {
+                constraintsParsed[i] = new double[] {
+                        Double.parseDouble(constraintsList[0]),
+                        Double.parseDouble(constraintsList[1]),
+                        Double.parseDouble(constraintsList[2]),
+                        0,
+                        0
+                };
+            } else if (constraintsList.length == 5) {
+                constraintsParsed[i] = new double[] {
+                        Double.parseDouble(constraintsList[0]),
+                        Double.parseDouble(constraintsList[1]),
+                        Double.parseDouble(constraintsList[2]),
+                        Double.parseDouble(constraintsList[3]),
+                        Double.parseDouble(constraintsList[4])
+                };
+            } else {
+                System.out.println("PATH PARSE ERROR");
+            }
+
         }
 
         return getTrajectories(pathsParsed, constraintsParsed, debug);
@@ -180,7 +225,7 @@ public class BBMPLoader {
             Path p = builder.build();
             Trajectory trajectory = new Trajectory(p,
                     getConstraints(constraints[pathIdx][0], constraints[pathIdx][1], constraints[pathIdx][2]),
-                    0.02);
+                    0.02, constraints[pathIdx][3], constraints[pathIdx][4]);
 
             sequence[pathIdx] = trajectory;
         }
