@@ -1,18 +1,18 @@
 {
   "fileName": "Byte_Swerve_Lib.json",
   "name": "Byte_Swerve_Lib",
-  "version": "2024.0.3",
-  "frcYear": 2024,
+  "version": "2025.1.0",
+  "frcYear": 2025,
   "uuid": "de9d060e-eae0-11ed-a05b-0242ac120003",
   "mavenUrls": [
     "https://jitpack.io"
   ],
-  "jsonUrl": "https://raw.githubusercontent.com/BytingBulldogs3539/Byte_Swerve_Lib/2024/Byte_Swerve_Lib.json",
+  "jsonUrl": "https://raw.githubusercontent.com/FRC-3539/Byte_Swerve_Lib/2025/Byte_Swerve_Lib.json",
   "javaDependencies": [
     {
-      "groupId": "com.github.BytingBulldogs3539",
+      "groupId": "com.github.FRC-3539",
       "artifactId": "Byte_Swerve_Lib",
-      "version": "2024.0.3"
+      "version": "2025.1.0"
     }
   ],
   "jniDependencies": [],
