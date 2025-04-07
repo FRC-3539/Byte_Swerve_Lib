@@ -25,7 +25,9 @@ public class Trajectory {
     public Trajectory(Path path, TrajectoryConstraint[] trajectoryConstraints, double sampleDistance,
             double trajectoryStartingVelocity, double trajectoryEndingVelocity) {
         this.path = path;
+
         this.constraints = trajectoryConstraints;
+
         this.trajectoryStartingVelocity = trajectoryStartingVelocity;
         this.trajectoryEndingVelocity = trajectoryEndingVelocity;
 
@@ -50,8 +52,9 @@ public class Trajectory {
 
             double maxEndingVelocity = Double.POSITIVE_INFINITY;
 
-            for (TrajectoryConstraint constraint : trajectoryConstraints) {
-                maxEndingVelocity = Math.min(constraint.getMaxVelocity(endingState), maxEndingVelocity);
+            for (TrajectoryConstraint constraint : constraints) {
+                maxEndingVelocity = Math.min(maxEndingVelocity,
+                        constraint.getMaxVelocity(startingState, endingState));
             }
 
             ConstrainedPathState state = new ConstrainedPathState(
@@ -76,7 +79,7 @@ public class Trajectory {
                 // We are accelerating
                 double maxStartingAcceleration = Double.POSITIVE_INFINITY;
                 double maxEndingAcceleration = Double.POSITIVE_INFINITY;
-                for (TrajectoryConstraint constraint : trajectoryConstraints) {
+                for (TrajectoryConstraint constraint : constraints) {
                     maxStartingAcceleration = Math.min(constraint.getMaxAcceleration(startingState, startingVelocity),
                             maxStartingAcceleration);
                     maxEndingAcceleration = Math.min(constraint.getMaxAcceleration(endingState, startingVelocity),
@@ -123,7 +126,7 @@ public class Trajectory {
             if (deltaVelocity < 0.0) {
                 // Use the deceleration constraint for when we decelerate
                 double deceleration = Double.POSITIVE_INFINITY;
-                for (TrajectoryConstraint constraint : trajectoryConstraints) {
+                for (TrajectoryConstraint constraint : constraints) {
                     deceleration = Math.min(deceleration,
                             constraint.getMaxDeceleration(constrainedState.pathState, constrainedState.endingVelocity));
                 }

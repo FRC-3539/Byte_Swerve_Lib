@@ -1,7 +1,7 @@
 {
   "fileName": "Byte_Swerve_Lib.json",
   "name": "Byte_Swerve_Lib",
-  "version": "2025.1.0",
+  "version": "2025.2.0",
   "frcYear": 2025,
   "uuid": "de9d060e-eae0-11ed-a05b-0242ac120003",
   "mavenUrls": [
@@ -12,7 +12,7 @@
     {
       "groupId": "com.github.FRC-3539",
       "artifactId": "Byte_Swerve_Lib",
-      "version": "2025.1.0"
+      "version": "2025.2.0"
     }
   ],
   "jniDependencies": [],

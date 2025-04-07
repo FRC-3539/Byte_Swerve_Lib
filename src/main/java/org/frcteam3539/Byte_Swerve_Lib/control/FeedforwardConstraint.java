@@ -1,7 +1,8 @@
 package org.frcteam3539.Byte_Swerve_Lib.control;
 
 /**
- * Constrain both the velocity and acceleration based on the equation <code>F = K<sub>V</sub>*V + K<sub>A</sub>*A</code>.
+ * Constrain both the velocity and acceleration based on the equation
+ * <code>F = K<sub>V</sub>*V + K<sub>A</sub>*A</code>.
  */
 public class FeedforwardConstraint extends TrajectoryConstraint {
     private final double targetFeedforward;
@@ -23,7 +24,7 @@ public class FeedforwardConstraint extends TrajectoryConstraint {
     }
 
     @Override
-    public double getMaxVelocity(Path.State state) {
+    public double getMaxVelocity(Path.State state, Path.State endingState) {
         return targetFeedforward / kV;
     }
 
@@ -37,7 +38,6 @@ public class FeedforwardConstraint extends TrajectoryConstraint {
     public double getMaxDeceleration(Path.State state, double velocity) {
         return getMaxAcceleration(
                 state,
-                fastDeceleration ? -velocity : velocity
-        );
+                fastDeceleration ? -velocity : velocity);
     }
 }

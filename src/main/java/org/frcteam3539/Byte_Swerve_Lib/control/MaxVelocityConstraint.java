@@ -11,7 +11,7 @@ public class MaxVelocityConstraint extends TrajectoryConstraint {
     }
 
     @Override
-    public double getMaxVelocity(Path.State state) {
+    public double getMaxVelocity(Path.State state, Path.State endingState) {
         return maxVelocity;
     }
 }

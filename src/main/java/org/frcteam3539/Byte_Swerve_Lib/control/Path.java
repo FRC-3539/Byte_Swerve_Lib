@@ -2,12 +2,10 @@ package org.frcteam3539.Byte_Swerve_Lib.control;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 
 import java.text.DecimalFormat;
 import java.util.Map;
 
-import org.frcteam3539.Byte_Swerve_Lib.control.SimplePathBuilder.LineSegmentWithRadius;
 import org.frcteam3539.Byte_Swerve_Lib.util.InterpolatingDouble;
 import org.frcteam3539.Byte_Swerve_Lib.util.InterpolatingTreeMap;
 
@@ -24,8 +22,6 @@ public class Path {
         for (Map.Entry<Double, Rotation2d> rotationEntry : rotationMap.entrySet()) {
             this.rotationMap.put(new InterpolatingDouble(rotationEntry.getKey()), rotationEntry.getValue());
         }
-
-        
 
         distancesFromStart = new double[segments.length];
         double cumulativeLength = 0.0;
@@ -71,7 +67,6 @@ public class Path {
 
         PathSegment.State state = segment.calculate(segmentDistance);
 
-
         return new Path.State(
                 distance,
                 new Pose2d(state.getPosition(), rotationMap.getInterpolated(new InterpolatingDouble(distance))),
@@ -113,8 +108,7 @@ public class Path {
             this.radius = radius;
         }
 
-        public double getRadius()
-        {
+        public double getRadius() {
             return radius;
         }
 

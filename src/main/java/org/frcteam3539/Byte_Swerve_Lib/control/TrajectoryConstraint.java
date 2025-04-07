@@ -7,12 +7,13 @@ public abstract class TrajectoryConstraint {
      * @param state the path state.
      * @return the maximum velocity.
      */
-    public double getMaxVelocity(Path.State state) {
+    public double getMaxVelocity(Path.State state, Path.State endingState) {
         return Double.POSITIVE_INFINITY;
     }
 
     /**
-     * Gets the maximum acceleration this constraint allows for a path state and velocity.
+     * Gets the maximum acceleration this constraint allows for a path state and
+     * velocity.
      *
      * @param state    the path state.
      * @param velocity the velocity.
@@ -23,7 +24,8 @@ public abstract class TrajectoryConstraint {
     }
 
     /**
-     * Gets the maximum deceleration this constraint allows for a path state and velocity.
+     * Gets the maximum deceleration this constraint allows for a path state and
+     * velocity.
      *
      * @param state    the path state.
      * @param velocity the velocity.

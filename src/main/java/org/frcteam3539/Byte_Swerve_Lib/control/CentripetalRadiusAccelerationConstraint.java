@@ -23,7 +23,7 @@ public class CentripetalRadiusAccelerationConstraint extends TrajectoryConstrain
     }
 
     @Override
-    public double getMaxVelocity(Path.State state) {
+    public double getMaxVelocity(Path.State state, Path.State endingState) {
         // let A be the centripetal acceleration
         // let V be the max velocity
         // let C be the curvature of the path

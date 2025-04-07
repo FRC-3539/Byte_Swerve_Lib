@@ -1,12 +1,15 @@
 package org.frcteam3539.Byte_Swerve_Lib.control;
 
 /**
- * A constraint that limits velocity by not allowing the centripetal acceleration to exceed a specified amount.
+ * A constraint that limits velocity by not allowing the centripetal
+ * acceleration to exceed a specified amount.
  * <p>
- * Limiting centripetal acceleration will slow down the robot as it tries to take a turn. This can be used to prevent
+ * Limiting centripetal acceleration will slow down the robot as it tries to
+ * take a turn. This can be used to prevent
  * tipping when corners are taken at high speeds.
  * <p>
- * For more information on centripetal acceleration see <a href="https://www.youtube.com/watch?v=NH1_sO8QY3o">this Khan
+ * For more information on centripetal acceleration see
+ * <a href="https://www.youtube.com/watch?v=NH1_sO8QY3o">this Khan
  * Academy video</a>.
  */
 public class CentripetalAccelerationConstraint extends TrajectoryConstraint {
@@ -20,7 +23,7 @@ public class CentripetalAccelerationConstraint extends TrajectoryConstraint {
     }
 
     @Override
-    public double getMaxVelocity(Path.State state) {
+    public double getMaxVelocity(Path.State state, Path.State endingState) {
         // let A be the centripetal acceleration
         // let V be the max velocity
         // let C be the curvature of the path
@@ -29,10 +32,12 @@ public class CentripetalAccelerationConstraint extends TrajectoryConstraint {
         // A / C = V^2
         // sqrt(A / C) = V
         //
-        // Curvature and max acceleration is always positive and we only expect a positive result so plus-minus is not
+        // Curvature and max acceleration is always positive and we only expect a
+        // positive result so plus-minus is not
         // needed.
 
-        // Special case when following a line, centripetal acceleration is 0 so don't constrain velocity
+        // Special case when following a line, centripetal acceleration is 0 so don't
+        // constrain velocity
         if (state.getCurvature() == 0.0) {
             return Double.POSITIVE_INFINITY;
         }
