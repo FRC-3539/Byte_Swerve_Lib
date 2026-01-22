@@ -13,7 +13,7 @@ targetCompatibility = JavaVersion.VERSION_17
 
 allprojects {
     group = 'com.github.FRC-3539.Byte_Swerve_Lib'
-    version = '2025.2.0'
+    version = '2026.1.0'
 
     repositories {
         mavenCentral()
@@ -22,16 +22,16 @@ allprojects {
 }
 
 dependencies {
-    api group: 'edu.wpi.first.wpimath', name: 'wpimath-java', version: '2025.3.2'
+    api group: 'edu.wpi.first.wpimath', name: 'wpimath-java', version: '2026.2.1'
 
-    api group: 'edu.wpi.first.wpiutil', name: 'wpiutil-java', version: '2025.3.2'
+    api group: 'edu.wpi.first.wpiutil', name: 'wpiutil-java', version: '2026.2.1'
 
-    api group: 'edu.wpi.first.wpiunits', name: 'wpiunits-java', version: '2025.3.2'
+    api group: 'edu.wpi.first.wpiunits', name: 'wpiunits-java', version: '2026.2.1'
 
-    api group: 'edu.wpi.first.wpilibj', name: 'wpilibj-java', version: '2025.3.2'
+    api group: 'edu.wpi.first.wpilibj', name: 'wpilibj-java', version: '2026.2.1'
 
-    api group: 'edu.wpi.first.ntcore', name: 'ntcore-java', version: '2025.3.2'
-    api group: 'edu.wpi.first.cscore', name: 'cscore-java', version: '2025.3.2'
+    api group: 'edu.wpi.first.ntcore', name: 'ntcore-java', version: '2026.2.1'
+    api group: 'edu.wpi.first.cscore', name: 'cscore-java', version: '2026.2.1'
 
 
 
